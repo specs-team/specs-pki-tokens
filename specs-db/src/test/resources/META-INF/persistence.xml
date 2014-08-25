@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
+    <persistence-unit name="MySQLTestPersistenceUnit">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <class>org.specs.specsdb.model.Service</class>
+        <class>org.specs.specsdb.model.Sla</class>
+        <class>org.specs.specsdb.model.UserHasAttribute</class>
+        <class>org.specs.specsdb.model.Attribute</class>
+        <class>org.specs.specsdb.model.User</class>
+        <class>org.specs.specsdb.model.Role</class>
+        <class>org.specs.specsdb.model.Group</class>
+
+        <properties>
+            <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost/specsdb"/>
+            <property name="javax.persistence.jdbc.user" value="specs"/>
+            <property name="javax.persistence.jdbc.password" value="specs"/>
+
+            <property name="eclipselink.target-database" value="MySQL"/>
+            <property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+</persistence>

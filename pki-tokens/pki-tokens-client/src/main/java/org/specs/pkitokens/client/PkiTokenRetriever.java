@@ -1,0 +1,55 @@
+package org.specs.pkitokens.client;
+
+import org.apache.log4j.Logger;
+import org.codehaus.jettison.json.JSONObject;
+import org.specs.pkitokens.core.Token;
+
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+public class PkiTokenRetriever {
+    private static Logger log = Logger.getLogger(PkiTokenRetriever.class);
+
+    private String stsAddress;
+    private JerseyClient jerseyClient;
+    private SignerRegistry signerRegistry;
+
+    public PkiTokenRetriever(String stsAddress,
+                             String trustStoreFile, String trustStorePass) {
+        this(stsAddress, trustStoreFile, trustStorePass, null, null);
+    }
+
+    public PkiTokenRetriever(String stsAddress,
+                             String trustStoreFile, String trustStorePass,
+                             String keyStoreFile, String keyStorePass) {
+        this.stsAddress = stsAddress;
+        jerseyClient = new JerseyClient(trustStoreFile, trustStorePass, keyStoreFile, keyStorePass);
+        signerRegistry = new SignerRegistry(stsAddress, trustStoreFile, trustStorePass);
+    }
+
+    public Token obtainToken(String username, String password, int slaId) throws Exception {
+
+        JSONObject data = new JSONObject();
+        data.put("username", username);
+        data.put("password", password);
+        data.put("slaId", slaId);
+
+        Response response = jerseyClient.getClient()
+                .target(stsAddress)
+                .path("/pkitokens")
+                .request(MediaType.APPLICATION_JSON)
+                .accept(MediaType.TEXT_PLAIN)
+                .post(Entity.json(data.toString()));
+
+        if (response.getStatus() != 200) {
+            throw new Exception(String.format("Unexpected response from the STS: %d %s",
+                    response.getStatus(), response.getStatusInfo()));
+        }
+
+        String encodedToken = response.readEntity(String.class);
+        Token token = Token.decode(encodedToken, signerRegistry.getTokenSigner());
+
+        return token;
+    }
+}

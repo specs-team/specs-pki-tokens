@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<config>
+    <signing>
+        <certificate>
+            <file>src/test/resources/signing-cert.pem</file>
+        </certificate>
+        <privateKey>
+            <file>src/test/resources/signing-key.pem</file>
+            <password>specs</password>
+        </privateKey>
+    </signing>
+</config>
