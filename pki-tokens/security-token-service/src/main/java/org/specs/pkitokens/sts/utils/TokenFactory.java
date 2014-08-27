@@ -31,7 +31,7 @@ public class TokenFactory {
             Token token = new Token();
 
             UserClaim userClaim = new UserClaim();
-            token.getClaimsCollection().addClaim(userClaim);
+            token.getPayload().addClaim(userClaim);
             userClaim.setUserId(user.getUserId());
             userClaim.setUsername(user.getUsername());
             userClaim.setFirstname(user.getFirstName());
@@ -43,7 +43,7 @@ public class TokenFactory {
             }
 
             SLAClaim slaClaim = new SLAClaim();
-            token.getClaimsCollection().addClaim(slaClaim);
+            token.getPayload().addClaim(slaClaim);
             slaClaim.setSlaId(String.valueOf(slaId));
 
             for (Service service : sla.getServiceList()) {

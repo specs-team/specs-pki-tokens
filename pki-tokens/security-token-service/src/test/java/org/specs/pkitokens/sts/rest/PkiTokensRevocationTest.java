@@ -64,7 +64,7 @@ public class PkiTokensRevocationTest extends JerseyTest {
         assertEquals(trlItems.length(), 0);
 
         // revoke the token
-        URI tokenUri = UriBuilder.fromPath("/pkitokens/{tokenId}").build(token.getMetadata().getTokenId());
+        URI tokenUri = UriBuilder.fromPath("/pkitokens/{tokenId}").build(token.getHeader().getTokenId());
         ClientResponse response = webResource.path(tokenUri.toString()).delete(ClientResponse.class);
         assertEquals(response.getStatus(), 200);
 
@@ -77,8 +77,8 @@ public class PkiTokensRevocationTest extends JerseyTest {
         trlItems = trl.getJSONArray("tokens");
         assertEquals(trlItems.length(), 1);
         JSONObject trlItem0 = trlItems.getJSONObject(0);
-        assertEquals(trlItem0.getString("id"), token.getMetadata().getTokenId());
-        assertEquals(token.getMetadata().getExpiryDate().getTime(), trlItem0.getLong("exp"));
+        assertEquals(trlItem0.getString("id"), token.getHeader().getTokenId());
+        assertEquals(token.getHeader().getExpiryDate().getTime(), trlItem0.getLong("exp"));
 
         // get revoked tokens from now
         trl = webResource

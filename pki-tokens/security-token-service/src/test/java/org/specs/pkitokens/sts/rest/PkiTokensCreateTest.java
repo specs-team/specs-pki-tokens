@@ -54,7 +54,7 @@ public class PkiTokensCreateTest extends JerseyTest {
         // decode the token
         TokenSigner tokenSigner = new TokenSigner(Conf.getSigningCertificateFile());
         Token token = Token.decode(encodedToken, tokenSigner);
-        assertEquals(token.getMetadata().getTokenId().length(), 36);
-        assertTrue(token.getMetadata().getExpiryDate().after(new Date()));
+        assertEquals(token.getHeader().getTokenId().length(), 36);
+        assertTrue(token.getHeader().getExpiryDate().after(new Date()));
     }
 }

@@ -16,14 +16,14 @@ public class Utils {
         userClaim.setLastname("User");
         userClaim.setEmail("test.user@specs.org");
         userClaim.getRoles().add("SPECS_USER");
-        token.getClaimsCollection().addClaim(userClaim);
+        token.getPayload().addClaim(userClaim);
 
         SLAClaim slaClaim = new SLAClaim();
         slaClaim.setSlaId("2683");
-        token.getClaimsCollection().addClaim(slaClaim);
+        token.getPayload().addClaim(slaClaim);
 
         AuthzClaim authzClaim = new AuthzClaim();
-        token.getClaimsCollection().addClaim(authzClaim);
+        token.getPayload().addClaim(authzClaim);
         AuthzClaim.SpecsService specsService1 = new AuthzClaim.SpecsService();
         specsService1.setId("c9a177a0-18bf-11e4-8c21-0800200c9a66");
         specsService1.setUri("https://someserver/specsservice1");
