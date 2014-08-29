@@ -40,40 +40,4 @@ public class TokenSigner {
     public String getSignerName() {
         return signingCertificate.getSubjectDN().getName();
     }
-    /*public CMSSignedToken sign(Token token) throws Exception {
-
-        String tokenSerialized = tokenSerializer.serialize(null);
-        CMSTypedData msg = new CMSProcessableByteArray(tokenSerialized.getBytes());
-
-        ASN1EncodableVector signedAttributes = new ASN1EncodableVector();
-        Date expiryTime = new Date(new Date().getTime() + 3600*1000);
-        signedAttributes.add(new Attribute(EXPIRY_TIME_OID, new DERSet(new DERUTCTime(expiryTime))));
-
-        AttributeTable signedAttributesTable = new AttributeTable(signedAttributes);
-            signedAttributesTable.toASN1EncodableVector();
-            DefaultSignedAttributeTableGenerator signedAttributeGenerator = new DefaultSignedAttributeTableGenerator(signedAttributesTable);
-        JcaSignerInfoGeneratorBuilder signerInfoGeneratorBuilder = new JcaSignerInfoGeneratorBuilder(new
-                JcaDigestCalculatorProviderBuilder().setProvider("BC").build());
-        signerInfoGeneratorBuilder.setSignedAttributeGenerator(signedAttributeGenerator);
-
-        CMSSignedDataGenerator gen = new CMSSignedDataGenerator();
-        ContentSigner sha1Signer = new JcaContentSignerBuilder("SHA256withRSA")
-                .setProvider("BC").build(signingPrivateKey);
-
-        SignerInfoGenerator signerInfoGenerator = signerInfoGeneratorBuilder.build(sha1Signer, signingCertificate);
-        gen.addSignerInfoGenerator(signerInfoGenerator);
-
-        CMSSignedData cmsSignedData = gen.generate(msg, true);
-
-        byte[] tokenDigest = signerInfoGenerator.getCalculatedDigest();
-        String tokenDigestString = DatatypeConverter.printHexBinary(tokenDigest);
-
-        CMSSignedToken cmsSignedToken = new CMSSignedToken();
-        cmsSignedToken.setToken(token);
-        cmsSignedToken.setTokenId(tokenDigestString);
-        cmsSignedToken.setCmsSignedData(cmsSignedData);
-        cmsSignedToken.setExpiryDate(expiryTime);
-
-        return cmsSignedToken;
-    }*/
 }
