@@ -96,7 +96,7 @@ public class PkiTokensRevocationTest extends JerseyTest {
                 .get(JSONObject.class);
         trlItems = trl.getJSONArray("tokens");
         assertEquals(trlItems.length(), 1);
-        assertEquals(trl.getDouble("toDate"), (double)(new Date().getTime()), 1000);
+        assertEquals(trl.getDouble("toDate"), (double) (new Date().getTime()), 1000);
         assertEquals(trl.getLong("fromDate"), from);
     }
 }

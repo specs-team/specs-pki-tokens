@@ -5,7 +5,7 @@ import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 
 /**
- *  Represents an Identity that can sign tokens.
+ * Represents an Identity that can sign tokens.
  */
 public class TokenSigner {
 

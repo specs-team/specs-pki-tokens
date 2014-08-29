@@ -30,7 +30,7 @@ public class TRLCache {
         log.debug("TRLCache has started.");
     }
 
-     // TODO: synchronization?
+    // TODO: synchronization?
     public boolean isRevoked(String tokenId) throws SynchronizationException {
         if (syncSuccessful) {
             return trl.containsKey(tokenId);
@@ -111,7 +111,7 @@ public class TRLCache {
             JSONObject trlContentJson = new JSONObject(trlContent);
             Date toDate = new Date(trlContentJson.getLong("toDate"));
             JSONArray tokensArray = trlContentJson.getJSONArray("tokens");
-            for (int i=0; i<tokensArray.length(); i++) {
+            for (int i = 0; i < tokensArray.length(); i++) {
                 JSONObject item = tokensArray.getJSONObject(i);
                 String tokenId = item.getString("id");
                 long expiryTimeLong = item.getLong("exp");
@@ -153,7 +153,7 @@ public class TRLCache {
             JSONObject deltaTrlContentJson = new JSONObject(deltaTrlContent);
             Date toDate = new Date(deltaTrlContentJson.getLong("toDate"));
             JSONArray tokensArray = deltaTrlContentJson.getJSONArray("tokens");
-            for (int i=0; i<tokensArray.length(); i++) {
+            for (int i = 0; i < tokensArray.length(); i++) {
                 JSONObject item = tokensArray.getJSONObject(i);
                 String tokenId = item.getString("id");
                 long expiryTimeLong = item.getLong("exp");

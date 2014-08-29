@@ -21,7 +21,7 @@ public class JacksonSerializerTest {
 
         Claim claim = JacksonSerializer.readValue(json, Claim.class);
         assertEquals(claim.getClass(), UserClaim.class);
-        UserClaim userClaim1 = (UserClaim)claim;
+        UserClaim userClaim1 = (UserClaim) claim;
         assertEquals(userClaim1.getUserId(), userClaim.getUserId());
         assertEquals(userClaim1.getUsername(), userClaim.getUsername());
     }
