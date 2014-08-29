@@ -36,11 +36,15 @@ public class Token {
 
     public String sign(TokenSigner signer) throws Exception {
 
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + 3600 * 1000); // TODO: conf
+
         header = new Header();
         header.setTokenId(UUID.randomUUID().toString());
-        header.setSignatureAlgorithm("SHA256withRSA");
-        header.setExpiryDate(new Date(new Date().getTime() + 3600 * 1000)); // TODO: conf
-        header.setSignerName(signer.getSignerName());
+        header.setSignatureAlgorithm("SHA256withRSA"); // TODO: conf
+        header.setIssuedAt(now);
+        header.setExpiryDate(expiryDate);
+        header.setIssuer(signer.getSignerName());
 
         String headerJson = JacksonSerializer.writeValueAsString(header);
         String payloadJson = JacksonSerializer.writeValueAsString(payload);
@@ -127,11 +131,14 @@ public class Token {
         @JsonProperty("sigAlg")
         private String signatureAlgorithm;
 
+        @JsonProperty("iat")
+        private Date issuedAt;
+
         @JsonProperty("exp")
         private Date expiryDate;
 
-        @JsonProperty("signer")
-        private String signerName;
+        @JsonProperty("iss")
+        private String issuer;
 
         public Header() {
         }
@@ -152,6 +159,14 @@ public class Token {
             this.signatureAlgorithm = signatureAlgorithm;
         }
 
+        public Date getIssuedAt() {
+            return issuedAt;
+        }
+
+        public void setIssuedAt(Date issuedAt) {
+            this.issuedAt = issuedAt;
+        }
+
         public Date getExpiryDate() {
             return expiryDate;
         }
@@ -160,12 +175,12 @@ public class Token {
             this.expiryDate = expiryDate;
         }
 
-        public String getSignerName() {
-            return signerName;
+        public String getIssuer() {
+            return issuer;
         }
 
-        void setSignerName(String signerName) {
-            this.signerName = signerName;
+        void setIssuer(String issuer) {
+            this.issuer = issuer;
         }
     }
 
