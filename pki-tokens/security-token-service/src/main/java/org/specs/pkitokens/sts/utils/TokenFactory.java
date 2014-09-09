@@ -3,7 +3,6 @@ package org.specs.pkitokens.sts.utils;
 import org.specs.pkitokens.core.Token;
 import org.specs.pkitokens.core.claims.SLAClaim;
 import org.specs.pkitokens.core.claims.UserClaim;
-import org.specs.specsdb.dao.UserDAO;
 import org.specs.specsdb.model.Role;
 import org.specs.specsdb.model.Service;
 import org.specs.specsdb.model.Sla;
@@ -14,15 +13,9 @@ import javax.persistence.EntityManager;
 
 public class TokenFactory {
 
-    public static Token createToken(String username, String password, int slaId) throws Exception {
+    public static Token createToken(User user, int slaId) throws Exception {
         EntityManager em = EMF.createEntityManager();
         try {
-            // TODO: check password
-            User user = new UserDAO(em).findByUsername(username);
-            if (user == null) {
-                throw new Exception("Invalid username or password.");
-            }
-
             Sla sla = em.find(Sla.class, slaId);
             if (sla == null) {
                 throw new Exception(String.format("Invalid SLA id: %d", slaId));

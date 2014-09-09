@@ -2,6 +2,7 @@ package org.specs.pkitokens.sts.utils;
 
 import org.apache.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.specs.pkitokens.sts.ips.IpsFactory;
 import org.specs.pkitokens.sts.jpa.EMF;
 
 import javax.servlet.ServletContext;
@@ -28,6 +29,8 @@ public class WebAppInitializer implements ServletContextListener {
             EMF.init("StsMySQLPersistenceUnit");
 
             org.specs.specsdb.utils.EMF.init("SpecsdbMySQLPersistenceUnit");
+
+            IpsFactory.init();
 
             // register BouncyCastleProvider
             if (Security.getProvider("BC") == null) {

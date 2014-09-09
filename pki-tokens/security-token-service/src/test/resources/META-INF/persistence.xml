@@ -1,32 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
-    <persistence-unit name="TestDerbyPersistenceUnit">
+    <persistence-unit name="StsTestPersistenceUnit">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <class>org.specs.pkitokens.sts.jpa.model.PkiToken</class>
+        <class>org.specs.pkitokens.sts.jpa.model.AuthnAttempt</class>
 
         <properties>
             <property name="eclipselink.target-database" value="Derby"/>
             <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver"/>
-            <property name="javax.persistence.jdbc.url" value="jdbc:derby:memory:testDB;create=true"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:derby:memory:stsDB;create=true"/>
             <property name="eclipselink.logging.level" value="INFO"/>
-            <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
-            <property name="eclipselink.ddl-generation.output-mode" value="database"/>
-        </properties>
-    </persistence-unit>
-
-    <persistence-unit name="TestMySQLPersistenceUnit">
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-        <class>org.specs.pkitokens.sts.jpa.model.PkiToken</class>
-
-        <properties>
-            <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
-            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost/sts-test"/>
-            <property name="javax.persistence.jdbc.user" value="specs"/>
-            <property name="javax.persistence.jdbc.password" value="specs"/>
-
-            <property name="eclipselink.target-database" value="MySQL"/>
-            <property name="eclipselink.cache.shared.default" value="false"/>
-
             <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
             <property name="eclipselink.ddl-generation.output-mode" value="database"/>
         </properties>
@@ -43,14 +26,12 @@
         <class>org.specs.specsdb.model.Group</class>
 
         <properties>
-            <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
-            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost/specsdb"/>
-            <property name="javax.persistence.jdbc.user" value="specs"/>
-            <property name="javax.persistence.jdbc.password" value="specs"/>
-
-            <property name="eclipselink.target-database" value="MySQL"/>
-            <property name="eclipselink.cache.shared.default" value="false"/>
+            <property name="eclipselink.target-database" value="Derby"/>
+            <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:derby:memory:specsdb;create=true"/>
+            <property name="eclipselink.logging.level" value="INFO"/>
+            <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
+            <property name="eclipselink.ddl-generation.output-mode" value="database"/>
         </properties>
     </persistence-unit>
-
 </persistence>

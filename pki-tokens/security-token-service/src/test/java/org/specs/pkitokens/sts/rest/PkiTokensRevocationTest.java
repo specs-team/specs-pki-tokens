@@ -12,7 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.specs.pkitokens.core.Token;
 import org.specs.pkitokens.core.TokenSigner;
-import org.specs.pkitokens.sts.Utils;
 import org.specs.pkitokens.sts.jpa.EMF;
 import org.specs.pkitokens.sts.utils.Conf;
 
@@ -41,7 +40,6 @@ public class PkiTokensRevocationTest extends JerseyTest {
     @After
     public void tearDown() throws Exception {
         EMF.close();
-        Utils.dropTestDatabase();
     }
 
     @Test

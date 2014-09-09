@@ -3,6 +3,7 @@
     <persistence-unit name="StsMySQLPersistenceUnit">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <class>org.specs.pkitokens.sts.jpa.model.PkiToken</class>
+        <class>org.specs.pkitokens.sts.jpa.model.AuthnAttempt</class>
 
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
