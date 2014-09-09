@@ -15,7 +15,11 @@ CREATE  TABLE IF NOT EXISTS `user` (
   `first_name` VARCHAR(255) NOT NULL ,
   `last_name` VARCHAR(255) NOT NULL ,
   `email` VARCHAR(255) NOT NULL ,
-  `password` BINARY(32) NOT NULL ,
+  `password` VARCHAR(100) NOT NULL ,
+  `authn_attempts` INT NOT NULL DEFAULT 0 ,
+  `is_locked` TINYINT(1)  NOT NULL DEFAULT FALSE ,
+  `lock_date` DATETIME NULL ,
+  `unlock_code` VARCHAR(100) NULL ,
   PRIMARY KEY (`user_id`) )
 ENGINE = InnoDB;
 

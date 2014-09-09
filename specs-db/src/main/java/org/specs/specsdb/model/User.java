@@ -4,10 +4,11 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "user")
+@Table(name = "\"user\"")
 @NamedQueries({
         @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
         @NamedQuery(name = "User.findByUsername", query = "SELECT u FROM User u WHERE u.username = :username")
@@ -47,9 +48,22 @@ public class User implements Serializable {
     private String email;
     @Basic(optional = false)
     @NotNull
-    @Lob
-    @Column(name = "password", nullable = false)
-    private byte[] password;
+    @Column(name = "password", nullable = false, length = 100)
+    private String password;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "authn_attempts", nullable = false)
+    private int authnAttempts;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "is_locked", nullable = false)
+    private boolean isLocked;
+    @Column(name = "lock_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lockDate;
+    @Size(max = 100)
+    @Column(name = "unlock_code", length = 100)
+    private String unlockCode;
     @ManyToMany(mappedBy = "userList")
     private List<Group> groupList;
     @ManyToMany(mappedBy = "userList")
@@ -64,15 +78,6 @@ public class User implements Serializable {
 
     public User(String userId) {
         this.userId = userId;
-    }
-
-    public User(String userId, String username, String firstName, String lastName, String email, byte[] password) {
-        this.userId = userId;
-        this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
     }
 
     public String getUserId() {
@@ -123,12 +128,44 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public byte[] getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(byte[] password) {
+    public void setPassword(String password) {
         this.password = password;
+    }
+
+    public int getAuthnAttempts() {
+        return authnAttempts;
+    }
+
+    public void setAuthnAttempts(int authnAttempts) {
+        this.authnAttempts = authnAttempts;
+    }
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    public void setIsLocked(boolean isLocked) {
+        this.isLocked = isLocked;
+    }
+
+    public Date getLockDate() {
+        return lockDate;
+    }
+
+    public void setLockDate(Date lockDate) {
+        this.lockDate = lockDate;
+    }
+
+    public String getUnlockCode() {
+        return unlockCode;
+    }
+
+    public void setUnlockCode(String unlockCode) {
+        this.unlockCode = unlockCode;
     }
 
     public List<Group> getGroupList() {
@@ -187,5 +224,4 @@ public class User implements Serializable {
     public String toString() {
         return "org.specs.specsdb.model.User[ userId=" + userId + " ]";
     }
-
 }
