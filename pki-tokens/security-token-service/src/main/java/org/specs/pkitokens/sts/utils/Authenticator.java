@@ -88,15 +88,16 @@ public class Authenticator {
 
                     ips.storeAuthnAttempt(username, ipAddress, timestamp, false);
 
-                    if (authnAttempts > 15) { // TODO: conf
+                    if (authnAttempts > Conf.getIpsAccountLockoutAttempts()) {
                         // lock the user account
                         em.getTransaction().begin();
                         lockUser(user);
                         em.getTransaction().commit();
 
                         // notify the account owner
-                        MailService mailService = new MailService();
-                        mailService.sendAccountBlockedNotification(user);
+                        if (Conf.getIpsAccountBlockedNotifEnabled()) {
+                            MailService.sendAccountBlockedNotification(user);
+                        }
 
                         throw new AccountLockedException("You have exceeded the maximum number of attempts to authenticate with " +
                                 "your credentials. For security reasons, your account has been locked. An unlock code has been " +

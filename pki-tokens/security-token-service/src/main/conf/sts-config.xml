@@ -9,4 +9,39 @@
             <password>specs</password>
         </privateKey>
     </signing>
+    <ips>
+        <ipFilter>
+            <rule>
+                <timePeriod>3600</timePeriod>
+                <failedAttempts>15</failedAttempts>
+                <failedRatio>0.25</failedRatio>
+                <delay>60</delay>
+            </rule>
+        </ipFilter>
+        <usernameFilter>
+            <rule>
+                <timePeriod>3600</timePeriod>
+                <failedAttempts>5</failedAttempts>
+                <delay>300</delay>
+            </rule>
+        </usernameFilter>
+        <accountLockout>
+            <maxAttempt>20</maxAttempt>
+        </accountLockout>
+        <accountBlockedNotification>
+            <enabled>true</enabled>
+        </accountBlockedNotification>
+        <mail>
+            <from>
+                <name>Demo Cloud Service Provider</name>
+                <address>no-reply@demo-csp.com</address>
+            </from>
+            <smtp>
+                <properties>
+                    <property name="mail.smtp.host" value="smtp.democsp.com"/>
+                    <property name="mail.smtp.port" value="25"/>
+                </properties>
+            </smtp>
+        </mail>
+    </ips>
 </config>

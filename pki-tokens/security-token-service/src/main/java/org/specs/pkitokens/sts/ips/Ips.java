@@ -3,6 +3,7 @@ package org.specs.pkitokens.sts.ips;
 import org.apache.log4j.Logger;
 import org.specs.pkitokens.sts.jpa.EMF;
 import org.specs.pkitokens.sts.jpa.model.AuthnAttempt;
+import org.specs.pkitokens.sts.utils.Conf;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -44,15 +45,17 @@ public class Ips {
     private void checkAuthnAttemptsByUsername(String username) {
         EntityManager em = EMF.createEntityManager();
         try {
+            UsernameFilterRule rule = Conf.getIpsUsernameFilterRule();
             Date now = new Date();
-            Date fromDate = new Date(now.getTime() - 60 * 1000);
+            Date fromDate = new Date(now.getTime() - rule.getTimePeriod() * 1000);
             TypedQuery<Long> query = em.createNamedQuery("AuthnAttempt.countFailedByUsername", Long.class);
             query.setParameter("username", username);
             query.setParameter("timestamp", fromDate);
             long num = query.getSingleResult();
 
-            if (num >= 3) {
-                Date expiryDate = new Date(now.getTime() + 60 * 1000);
+            if (num >= rule.getFailedAttempts()) {
+                // TODO: increase delay progressively?
+                Date expiryDate = new Date(now.getTime() + rule.getDelay() * 1000);
                 usernameLocks.put(username, expiryDate);
             }
         }
@@ -64,21 +67,24 @@ public class Ips {
     private void checkAuthnAttemptsByIp(String ipAddress) {
         EntityManager em = EMF.createEntityManager();
         try {
+            IpFilterRule rule = Conf.getIpsIpFilterRule();
             Date now = new Date();
-            Date fromDate = new Date(now.getTime() - 300 * 1000);
+            Date fromDate = new Date(now.getTime() - rule.getTimePeriod() * 1000);
             TypedQuery<Long> query1 = em.createNamedQuery("AuthnAttempt.countFailedByIp", Long.class);
             query1.setParameter("ipAddress", ipAddress);
             query1.setParameter("timestamp", fromDate);
             long numOfFailed = query1.getSingleResult();
 
-            TypedQuery<Long> query2 = em.createNamedQuery("AuthnAttempt.countSucceededByIp", Long.class);
+            TypedQuery<Long> query2 = em.createNamedQuery("AuthnAttempt.countByIp", Long.class);
             query2.setParameter("ipAddress", ipAddress);
             query2.setParameter("timestamp", fromDate);
-            long numOfSucceeded = query2.getSingleResult();
+            long numOfAllAttempts = query2.getSingleResult();
 
-            if (numOfFailed >= 5 &&
-                    (numOfSucceeded == 0 || (double) numOfFailed / numOfSucceeded > 0.5)) {
-                Date expiryDate = new Date(now.getTime() + 60 * 1000);
+            if (numOfAllAttempts > 0 &&
+                    numOfFailed >= rule.getFailedAttempts() &&
+                    (float) numOfFailed / numOfAllAttempts > rule.getFailedRatio()) {
+                // TODO: increase delay progressively?
+                Date expiryDate = new Date(now.getTime() + rule.getDelay() * 1000);
                 ipLocks.put(ipAddress, expiryDate);
             }
         }
@@ -118,6 +124,75 @@ public class Ips {
         }
         else {
             return false;
+        }
+    }
+
+    public static class IpFilterRule {
+        private int timePeriod;
+        private int failedAttempts;
+        private float failedRatio;
+        private int delay;
+
+        public long getTimePeriod() {
+            return timePeriod;
+        }
+
+        public void setTimePeriod(int timePeriod) {
+            this.timePeriod = timePeriod;
+        }
+
+        public int getFailedAttempts() {
+            return failedAttempts;
+        }
+
+        public void setFailedAttempts(int failedAttempts) {
+            this.failedAttempts = failedAttempts;
+        }
+
+        public float getFailedRatio() {
+            return failedRatio;
+        }
+
+        public void setFailedRatio(float failedRatio) {
+            this.failedRatio = failedRatio;
+        }
+
+        public int getDelay() {
+            return delay;
+        }
+
+        public void setDelay(int delay) {
+            this.delay = delay;
+        }
+    }
+
+    public static class UsernameFilterRule {
+        private int timePeriod;
+        private int failedAttempts;
+        private int delay;
+
+        public int getTimePeriod() {
+            return timePeriod;
+        }
+
+        public void setTimePeriod(int timePeriod) {
+            this.timePeriod = timePeriod;
+        }
+
+        public float getFailedAttempts() {
+            return failedAttempts;
+        }
+
+        public void setFailedAttempts(int failedAttempts) {
+            this.failedAttempts = failedAttempts;
+        }
+
+        public int getDelay() {
+            return delay;
+        }
+
+        public void setDelay(int delay) {
+            this.delay = delay;
         }
     }
 }

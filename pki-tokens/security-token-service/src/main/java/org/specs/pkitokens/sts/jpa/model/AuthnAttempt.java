@@ -11,8 +11,8 @@ import java.util.Date;
         @NamedQuery(name = "AuthnAttempt.findAll", query = "SELECT a FROM AuthnAttempt a"),
         @NamedQuery(name = "AuthnAttempt.countFailedByIp", query = "SELECT COUNT(a) FROM AuthnAttempt a WHERE " +
                 "a.ipAddress = :ipAddress AND a.timestamp > :timestamp AND a.success = FALSE"),
-        @NamedQuery(name = "AuthnAttempt.countSucceededByIp", query = "SELECT COUNT(a) FROM AuthnAttempt a WHERE " +
-                "a.ipAddress = :ipAddress AND a.timestamp > :timestamp AND a.success = TRUE"),
+        @NamedQuery(name = "AuthnAttempt.countByIp", query = "SELECT COUNT(a) FROM AuthnAttempt a WHERE " +
+                "a.ipAddress = :ipAddress AND a.timestamp > :timestamp"),
         @NamedQuery(name = "AuthnAttempt.countFailedByUsername", query = "SELECT COUNT(a) FROM AuthnAttempt a WHERE " +
                 "a.username = :username AND a.timestamp > :timestamp AND a.success = FALSE")
 })
