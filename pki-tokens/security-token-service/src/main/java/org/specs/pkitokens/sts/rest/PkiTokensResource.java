@@ -65,7 +65,7 @@ public class PkiTokensResource {
         EntityManager em = EMF.createEntityManager();
         try {
             PkiToken pkiToken = new PkiToken();
-            pkiToken.setTokenId(token.getHeader().getTokenId());
+            pkiToken.setTokenId(token.getTokenId());
             pkiToken.setExpiryDate(token.getHeader().getExpiryDate());
 
             em.getTransaction().begin();

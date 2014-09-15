@@ -19,8 +19,8 @@ public class PkiToken implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @Size(min = 36, max = 36)
-    @Column(name = "token_id", length = 36, updatable = false, nullable = false)
+    @Size(min = 64, max = 64)
+    @Column(name = "token_id", length = 64, updatable = false, nullable = false)
     private String tokenId;
     @Basic(optional = false)
     @NotNull

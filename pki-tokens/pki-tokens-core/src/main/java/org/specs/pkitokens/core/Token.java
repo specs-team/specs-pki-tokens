@@ -5,9 +5,14 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.specs.pkitokens.core.claims.Claim;
 import org.specs.pkitokens.core.exceptions.ValidationException;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
+import java.security.MessageDigest;
 import java.security.Signature;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 public class Token {
     private static final char SEPARATOR = '.';
@@ -17,6 +22,8 @@ public class Token {
     private Payload payload;
 
     private String encodedValue;
+
+    private String tokenId;
 
     public Token() {
         payload = new Payload();
@@ -40,7 +47,6 @@ public class Token {
         Date expiryDate = new Date(now.getTime() + 3600 * 1000); // TODO: conf
 
         header = new Header();
-        header.setTokenId(UUID.randomUUID().toString());
         header.setSignatureAlgorithm("SHA256withRSA"); // TODO: conf
         header.setIssuedAt(now);
         header.setExpiryDate(expiryDate);
@@ -64,6 +70,11 @@ public class Token {
         sigInstance.update(message);
         byte[] signature = sigInstance.sign();
         byte[] signatureEncoded = Base64.encode(signature);
+
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        md.update(signature);
+        byte[] digest = md.digest();
+        tokenId = DatatypeConverter.printHexBinary(digest);
 
         StringBuilder sb = new StringBuilder(message.length + 1 + signatureEncoded.length);
         sb.append(new String(message));
@@ -103,12 +114,22 @@ public class Token {
         String claimsJson = CompressUtils.decompress(claimsCompressed);
         Payload payload = JacksonSerializer.readValue(claimsJson, Payload.class);
 
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        md.update(signature);
+        byte[] digest = md.digest();
+        String tokenId = DatatypeConverter.printHexBinary(digest);
+
         Token token = new Token();
         token.header = header;
         token.payload = payload;
         token.encodedValue = encodedToken;
+        token.tokenId = tokenId;
 
         return token;
+    }
+
+    public String getTokenId() {
+        return tokenId;
     }
 
     public String toJson() throws IOException {
@@ -120,13 +141,10 @@ public class Token {
                 .writeValueAsString(header);
         String claimsJson = JacksonSerializer.getObjectMapper().defaultPrettyPrintingWriter()
                 .writeValueAsString(payload);
-        return String.format("Header:\n%s\nPayload:\n%s", headerJson, claimsJson);
+        return String.format("TokenId: %s\nHeader:\n%s\nPayload:\n%s", tokenId, headerJson, claimsJson);
     }
 
     public static class Header {
-
-        @JsonProperty("id")
-        private String tokenId;
 
         @JsonProperty("sigAlg")
         private String signatureAlgorithm;
@@ -141,14 +159,6 @@ public class Token {
         private String issuer;
 
         public Header() {
-        }
-
-        public String getTokenId() {
-            return tokenId;
-        }
-
-        void setTokenId(String tokenId) {
-            this.tokenId = tokenId;
         }
 
         public String getSignatureAlgorithm() {

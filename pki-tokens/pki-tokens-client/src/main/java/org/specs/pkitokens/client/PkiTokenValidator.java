@@ -17,7 +17,7 @@ public class PkiTokenValidator {
 
     public Token decodeAndValidate(String encodedToken) throws Exception {
         Token token = Token.decode(encodedToken, signerRegistry.getTokenSigner());
-        if (trlCache.isRevoked(token.getHeader().getTokenId())) {
+        if (trlCache.isRevoked(token.getTokenId())) {
             throw new ValidationException("The token is revoked.");
         }
 

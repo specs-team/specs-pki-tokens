@@ -30,7 +30,7 @@ public class PkiTokensRevocationTest extends JerseyTest {
 
     @Before
     public void setUp() throws Exception {
-        EMF.init("TestDerbyPersistenceUnit");
+        EMF.init("StsTestPersistenceUnit");
         Conf.load("src/test/resources/test-config.xml");
         if (Security.getProvider("BC") == null) {
             Security.addProvider(new BouncyCastleProvider());
@@ -62,7 +62,7 @@ public class PkiTokensRevocationTest extends JerseyTest {
         assertEquals(trlItems.length(), 0);
 
         // revoke the token
-        URI tokenUri = UriBuilder.fromPath("/pkitokens/{tokenId}").build(token.getHeader().getTokenId());
+        URI tokenUri = UriBuilder.fromPath("/pkitokens/{tokenId}").build(token.getTokenId());
         ClientResponse response = webResource.path(tokenUri.toString()).delete(ClientResponse.class);
         assertEquals(response.getStatus(), 200);
 
@@ -75,7 +75,7 @@ public class PkiTokensRevocationTest extends JerseyTest {
         trlItems = trl.getJSONArray("tokens");
         assertEquals(trlItems.length(), 1);
         JSONObject trlItem0 = trlItems.getJSONObject(0);
-        assertEquals(trlItem0.getString("id"), token.getHeader().getTokenId());
+        assertEquals(trlItem0.getString("id"), token.getTokenId());
         assertEquals(token.getHeader().getExpiryDate().getTime(), trlItem0.getLong("exp"));
 
         // get revoked tokens from now

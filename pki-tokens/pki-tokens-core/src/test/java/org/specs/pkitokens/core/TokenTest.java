@@ -32,11 +32,14 @@ public class TokenTest {
 
         Token token = Utils.createToken();
         String encodedToken = token.sign(signer);
-        System.out.println(encodedToken);
+        System.out.println("Encoded token:\n" + encodedToken);
+        System.out.println();
+        System.out.println("Token dump:\n" + token.dump());
 
         TokenSigner signer1 = new TokenSigner(new File(SIGNING_CERT));
         Token token1 = Token.decode(encodedToken, signer1);
 
+        assertEquals(token.getTokenId(), token1.getTokenId());
         assertEquals(token.toJson(), token1.toJson());
         assertEquals(token1.getEncodedValue(), encodedToken);
     }
