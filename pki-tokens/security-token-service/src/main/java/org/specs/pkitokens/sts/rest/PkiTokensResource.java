@@ -55,8 +55,10 @@ public class PkiTokensResource {
         Token token = TokenFactory.createToken(user, slaId);
 
         TokenSigner tokenSigner = new TokenSigner(
-                Conf.getSigningCertificateFile(),
-                Conf.getSigningPrivateKeyFile(),
+                Conf.getSignerName(),
+                Conf.getSigningKeyStoreFile(),
+                Conf.getSigningKeyStorePass(),
+                Conf.getSigningCertFingerprint(),
                 Conf.getSigningPrivateKeyPass()
         );
 

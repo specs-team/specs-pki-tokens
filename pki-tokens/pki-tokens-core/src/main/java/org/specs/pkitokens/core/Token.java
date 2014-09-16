@@ -9,6 +9,7 @@ import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.Signature;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -51,6 +52,7 @@ public class Token {
         header.setIssuedAt(now);
         header.setExpiryDate(expiryDate);
         header.setIssuer(signer.getSignerName());
+        header.setSigningCertFingerprint(signer.getSignerFingerprint());
 
         String headerJson = JacksonSerializer.writeValueAsString(header);
         String payloadJson = JacksonSerializer.writeValueAsString(payload);
@@ -85,7 +87,7 @@ public class Token {
         return encodedValue;
     }
 
-    public static Token decode(String encodedToken, TokenSigner tokenSigner) throws Exception {
+    public static Token decode(String encodedToken, VerificationCertProvider verifCertProvider) throws Exception {
         int pos1 = encodedToken.indexOf(SEPARATOR);
         int pos2 = encodedToken.indexOf(SEPARATOR, pos1 + 1);
         byte[] encodedTokenBytes = encodedToken.getBytes();
@@ -100,9 +102,11 @@ public class Token {
             throw new ValidationException("The token is expired.");
         }
 
+        X509Certificate verificationCert = verifCertProvider.getCertificate(header.getSigningCertFingerprint());
+
         // verify signature
         Signature sigInstance = Signature.getInstance(header.getSignatureAlgorithm());
-        sigInstance.initVerify(tokenSigner.getSigningCertificate());
+        sigInstance.initVerify(verificationCert);
         sigInstance.update(encodedTokenBytes, 0, pos2);
         byte[] signature = Base64.decode(Arrays.copyOfRange(encodedTokenBytes, pos2 + 1, encodedTokenBytes.length));
         boolean isVerified = sigInstance.verify(signature);
@@ -158,6 +162,9 @@ public class Token {
         @JsonProperty("iss")
         private String issuer;
 
+        @JsonProperty("scf")
+        private String signingCertFingerprint;
+
         public Header() {
         }
 
@@ -191,6 +198,14 @@ public class Token {
 
         void setIssuer(String issuer) {
             this.issuer = issuer;
+        }
+
+        public String getSigningCertFingerprint() {
+            return signingCertFingerprint;
+        }
+
+        public void setSigningCertFingerprint(String signingCertFingerprint) {
+            this.signingCertFingerprint = signingCertFingerprint;
         }
     }
 

@@ -3,6 +3,7 @@ package org.specs.pkitokens.client;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONObject;
 import org.specs.pkitokens.core.Token;
+import org.specs.pkitokens.core.VerificationCertProvider;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
@@ -13,7 +14,7 @@ public class PkiTokenRetriever {
 
     private String stsAddress;
     private JerseyClient jerseyClient;
-    private SignerRegistry signerRegistry;
+    private VerificationCertProvider verifCertProvider;
 
     public PkiTokenRetriever(String stsAddress,
                              String trustStoreFile, String trustStorePass) {
@@ -25,7 +26,7 @@ public class PkiTokenRetriever {
                              String keyStoreFile, String keyStorePass) {
         this.stsAddress = stsAddress;
         jerseyClient = new JerseyClient(trustStoreFile, trustStorePass, keyStoreFile, keyStorePass);
-        signerRegistry = new SignerRegistry(stsAddress, trustStoreFile, trustStorePass);
+        verifCertProvider = new VerificationCertProviderImpl(stsAddress, trustStoreFile, trustStorePass);
     }
 
     public Token obtainToken(String username, String password, int slaId) throws Exception {
@@ -48,7 +49,7 @@ public class PkiTokenRetriever {
         }
 
         String encodedToken = response.readEntity(String.class);
-        Token token = Token.decode(encodedToken, signerRegistry.getTokenSigner());
+        Token token = Token.decode(encodedToken, verifCertProvider);
 
         return token;
     }

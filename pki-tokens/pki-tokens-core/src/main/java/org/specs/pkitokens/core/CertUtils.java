@@ -1,11 +1,10 @@
 package org.specs.pkitokens.core;
 
 import org.bouncycastle.openssl.PEMReader;
+import org.bouncycastle.openssl.PEMWriter;
 import org.bouncycastle.openssl.PasswordFinder;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.StringReader;
+import java.io.*;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
@@ -61,6 +60,22 @@ public class CertUtils {
         }
         else {
             return (X509Certificate) o;
+        }
+    }
+
+    public static String writeToPem(X509Certificate certificate) throws IOException {
+        PEMWriter pemWriter = null;
+        try {
+            StringWriter sw = new StringWriter();
+            pemWriter = new PEMWriter(sw);
+            pemWriter.writeObject(certificate);
+            pemWriter.flush();
+            return sw.toString();
+        }
+        finally {
+            if (pemWriter != null) {
+                pemWriter.close();
+            }
         }
     }
 }

@@ -9,7 +9,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.specs.pkitokens.core.Token;
-import org.specs.pkitokens.core.TokenSigner;
+import org.specs.pkitokens.core.VerificationCertProvider;
+import org.specs.pkitokens.core.VerificationCertProviderP12;
 import org.specs.pkitokens.sts.Utils;
 import org.specs.pkitokens.sts.jpa.EMF;
 import org.specs.pkitokens.sts.utils.Conf;
@@ -24,6 +25,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class PkiTokensCreateTest extends JerseyTest {
+    private static final String SIGNING_KEYSTORE_FILE = "src/test/resources/signing-keystore.p12";
+    private static final String SIGNING_KEYSTORE_PASS = "password";
 
     public PkiTokensCreateTest() throws Exception {
         super(new WebAppDescriptor.Builder("org.specs.pkitokens.sts.rest").build());
@@ -70,8 +73,12 @@ public class PkiTokensCreateTest extends JerseyTest {
         String encodedToken = webResource.path("/pkitokens").post(String.class, reqData);
 
         // decode the token
-        TokenSigner tokenSigner = new TokenSigner(Conf.getSigningCertificateFile());
-        Token token = Token.decode(encodedToken, tokenSigner);
+        VerificationCertProvider verifCertProvider = new VerificationCertProviderP12(
+                SIGNING_KEYSTORE_FILE,
+                SIGNING_KEYSTORE_PASS
+        );
+
+        Token token = Token.decode(encodedToken, verifCertProvider);
         assertNotNull(token.getTokenId().length());
         assertTrue(token.getHeader().getExpiryDate().after(new Date()));
     }

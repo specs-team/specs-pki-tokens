@@ -6,6 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.specs.pkitokens.core.Token;
+import org.specs.pkitokens.core.VerificationCertProvider;
 
 import java.security.Security;
 
@@ -42,8 +43,8 @@ public class PkiTokenValidatorTest {
         String encodedToken = token.getEncodedValue();
         log.debug("Token obtained: " + encodedToken);
 
-        SignerRegistry signerRegistry = new SignerRegistry(STS_ADDRESS, TRUSTSTORE_FILE, TRUSTSTORE_PASS);
-        PkiTokenValidator pkiTokenValidator = new PkiTokenValidator(signerRegistry, trlCache);
+        VerificationCertProvider verifCertProvider = new VerificationCertProviderImpl(STS_ADDRESS, TRUSTSTORE_FILE, TRUSTSTORE_PASS);
+        PkiTokenValidator pkiTokenValidator = new PkiTokenValidator(verifCertProvider, trlCache);
 
         Token token1 = pkiTokenValidator.decodeAndValidate(encodedToken);
         log.debug("The token is valid.");

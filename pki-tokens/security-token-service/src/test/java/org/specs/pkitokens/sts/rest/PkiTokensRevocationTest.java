@@ -11,7 +11,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.specs.pkitokens.core.Token;
-import org.specs.pkitokens.core.TokenSigner;
+import org.specs.pkitokens.core.VerificationCertProvider;
+import org.specs.pkitokens.core.VerificationCertProviderP12;
 import org.specs.pkitokens.sts.jpa.EMF;
 import org.specs.pkitokens.sts.utils.Conf;
 
@@ -23,6 +24,8 @@ import java.util.Date;
 import static org.junit.Assert.assertEquals;
 
 public class PkiTokensRevocationTest extends JerseyTest {
+    private static final String SIGNING_KEYSTORE_FILE = "src/test/resources/signing-keystore.p12";
+    private static final String SIGNING_KEYSTORE_PASS = "password";
 
     public PkiTokensRevocationTest() throws Exception {
         super(new WebAppDescriptor.Builder("org.specs.pkitokens.sts.rest").build());
@@ -53,8 +56,12 @@ public class PkiTokensRevocationTest extends JerseyTest {
         reqData.put("slaId", "1");
         String encodedToken = webResource.path("/pkitokens").post(String.class, reqData);
 
-        TokenSigner tokenSigner = new TokenSigner(Conf.getSigningCertificateFile());
-        Token token = Token.decode(encodedToken, tokenSigner);
+        VerificationCertProvider verifCertProvider = new VerificationCertProviderP12(
+                SIGNING_KEYSTORE_FILE,
+                SIGNING_KEYSTORE_PASS
+        );
+
+        Token token = Token.decode(encodedToken, verifCertProvider);
 
         // token revocation list should be empty
         JSONObject trl = webResource.path("/trl").get(JSONObject.class);

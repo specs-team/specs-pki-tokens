@@ -4,7 +4,6 @@ import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.log4j.Logger;
 import org.specs.pkitokens.sts.ips.Ips;
 
-import java.io.File;
 import java.util.List;
 import java.util.Properties;
 
@@ -27,16 +26,24 @@ public class Conf {
         }
     }
 
-    public static File getSigningCertificateFile() {
-        return new File(config.getString("signing.certificate.file"));
+    public static String getSignerName() {
+        return config.getString("signing.signerName");
     }
 
-    public static File getSigningPrivateKeyFile() {
-        return new File(config.getString("signing.privateKey.file"));
+    public static String getSigningKeyStoreFile() {
+        return config.getString("signing.signingKeyStore.keyStoreFile");
+    }
+
+    public static String getSigningKeyStorePass() throws Exception {
+        return config.getString("signing.signingKeyStore.keyStorePass");
+    }
+
+    public static String getSigningCertFingerprint() {
+        return config.getString("signing.signingKeyStore.signingCertFingerprint");
     }
 
     public static String getSigningPrivateKeyPass() {
-        return config.getString("signing.privateKey.password");
+        return config.getString("signing.signingKeyStore.signingPrivateKeyPass");
     }
 
     public static boolean getIpsAccountBlockedNotifEnabled() {

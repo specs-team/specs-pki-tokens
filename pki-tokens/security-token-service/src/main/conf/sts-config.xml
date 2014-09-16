@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <config>
     <signing>
-        <certificate>
-            <file>/etc/specs/security-token-service/signing-cert.pem</file>
-        </certificate>
-        <privateKey>
-            <file>/etc/specs/security-token-service/signing-key.pem</file>
-            <password>specs</password>
-        </privateKey>
+        <signerName>specs-demo</signerName>
+        <signingKeyStore>
+            <keyStoreFile>/etc/specs/security-token-service/signing-keystore.p12</keyStoreFile>
+            <keyStorePass>password</keyStorePass>
+            <signingCertFingerprint>01:18:BD:FE:5A:AF:DC:64:21:F5:07:93:7C:87:50:F6:5E:4C:75:B0</signingCertFingerprint>
+            <signingPrivateKeyPass>password</signingPrivateKeyPass>
+        </signingKeyStore>
     </signing>
     <ips>
         <ipFilter>

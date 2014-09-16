@@ -3,6 +3,7 @@ package org.specs.pkitokens.client;
 import org.apache.commons.cli.*;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.specs.pkitokens.core.Token;
+import org.specs.pkitokens.core.VerificationCertProvider;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -48,10 +49,11 @@ public class ConsoleClient {
             Security.addProvider(new BouncyCastleProvider());
         }
 
-        SignerRegistry signerRegistry = new SignerRegistry(stsAddress, truststoreFile, truststorePass);
+        VerificationCertProvider verifCertProvider =
+                new VerificationCertProviderImpl(stsAddress, truststoreFile, truststorePass);
         TRLCache trlCache = new TRLCache(stsAddress, truststoreFile, truststorePass);
         PkiTokenRetriever pkiTokenRetriever = new PkiTokenRetriever(stsAddress, truststoreFile, truststorePass);
-        PkiTokenValidator pkiTokenValidator = new PkiTokenValidator(signerRegistry, trlCache);
+        PkiTokenValidator pkiTokenValidator = new PkiTokenValidator(verifCertProvider, trlCache);
 
         printHelp();
 
