@@ -5,12 +5,13 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.specs.pkitokens.client.exceptions.SynchronizationException;
+import org.specs.pkitokens.core.RevocationVerifier;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.*;
 
-public class TRLCache {
+public class TRLCache implements RevocationVerifier {
     private static Logger log = Logger.getLogger(TRLCache.class);
 
     private Thread cacheSyncEngineThread;
@@ -31,6 +32,7 @@ public class TRLCache {
     }
 
     // TODO: synchronization?
+    @Override
     public boolean isRevoked(String tokenId) throws SynchronizationException {
         if (syncSuccessful) {
             return trl.containsKey(tokenId);

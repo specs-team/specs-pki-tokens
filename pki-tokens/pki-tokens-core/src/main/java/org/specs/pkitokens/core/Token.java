@@ -3,7 +3,7 @@ package org.specs.pkitokens.core;
 import org.bouncycastle.util.encoders.Base64;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.specs.pkitokens.core.claims.Claim;
-import org.specs.pkitokens.core.exceptions.ValidationException;
+import org.specs.pkitokens.core.exceptions.InvalidTokenException;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
@@ -87,7 +87,8 @@ public class Token {
         return encodedValue;
     }
 
-    public static Token decode(String encodedToken, VerificationCertProvider verifCertProvider) throws Exception {
+    public static Token decode(String encodedToken, VerificationCertProvider verifCertProvider,
+                               RevocationVerifier revocationVerifier) throws Exception {
         int pos1 = encodedToken.indexOf(SEPARATOR);
         int pos2 = encodedToken.indexOf(SEPARATOR, pos1 + 1);
         byte[] encodedTokenBytes = encodedToken.getBytes();
@@ -99,7 +100,7 @@ public class Token {
 
         // check expiry date
         if (header.getExpiryDate().before(new Date())) {
-            throw new ValidationException("The token is expired.");
+            throw new InvalidTokenException("The token is expired.");
         }
 
         X509Certificate verificationCert = verifCertProvider.getCertificate(header.getSigningCertFingerprint());
@@ -111,17 +112,22 @@ public class Token {
         byte[] signature = Base64.decode(Arrays.copyOfRange(encodedTokenBytes, pos2 + 1, encodedTokenBytes.length));
         boolean isVerified = sigInstance.verify(signature);
         if (!isVerified) {
-            throw new ValidationException("The token's digital signature is invalid.");
+            throw new InvalidTokenException("The token's digital signature is invalid.");
         }
-
-        byte[] claimsCompressed = Base64.decode(Arrays.copyOfRange(encodedTokenBytes, pos1 + 1, pos2));
-        String claimsJson = CompressUtils.decompress(claimsCompressed);
-        Payload payload = JacksonSerializer.readValue(claimsJson, Payload.class);
 
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         md.update(signature);
         byte[] digest = md.digest();
         String tokenId = DatatypeConverter.printHexBinary(digest);
+        if (revocationVerifier != null) {
+            if (revocationVerifier.isRevoked(tokenId)) {
+                throw new InvalidTokenException("The token has been revoked.");
+            }
+        }
+
+        byte[] claimsCompressed = Base64.decode(Arrays.copyOfRange(encodedTokenBytes, pos1 + 1, pos2));
+        String claimsJson = CompressUtils.decompress(claimsCompressed);
+        Payload payload = JacksonSerializer.readValue(claimsJson, Payload.class);
 
         Token token = new Token();
         token.header = header;

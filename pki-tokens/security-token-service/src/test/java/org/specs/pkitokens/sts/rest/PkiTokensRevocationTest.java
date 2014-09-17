@@ -61,7 +61,7 @@ public class PkiTokensRevocationTest extends JerseyTest {
                 SIGNING_KEYSTORE_PASS
         );
 
-        Token token = Token.decode(encodedToken, verifCertProvider);
+        Token token = Token.decode(encodedToken, verifCertProvider, null);
 
         // token revocation list should be empty
         JSONObject trl = webResource.path("/trl").get(JSONObject.class);

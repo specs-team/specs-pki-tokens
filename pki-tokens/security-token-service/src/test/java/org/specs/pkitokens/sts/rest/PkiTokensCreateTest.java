@@ -78,7 +78,7 @@ public class PkiTokensCreateTest extends JerseyTest {
                 SIGNING_KEYSTORE_PASS
         );
 
-        Token token = Token.decode(encodedToken, verifCertProvider);
+        Token token = Token.decode(encodedToken, verifCertProvider, null);
         assertNotNull(token.getTokenId().length());
         assertTrue(token.getHeader().getExpiryDate().after(new Date()));
     }

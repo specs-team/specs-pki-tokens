@@ -44,7 +44,14 @@ public class TokenTest {
                 SIGNING_KEYSTORE_PASS
         );
 
-        Token token1 = Token.decode(encodedToken, verifCertProvider);
+        RevocationVerifier revocationVerifier = new RevocationVerifier() {
+            @Override
+            public boolean isRevoked(String tokenId) {
+                return false;
+            }
+        };
+
+        Token token1 = Token.decode(encodedToken, verifCertProvider, revocationVerifier);
 
         assertEquals(token.getTokenId(), token1.getTokenId());
         assertEquals(token.toJson(), token1.toJson());

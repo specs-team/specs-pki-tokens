@@ -49,7 +49,9 @@ public class PkiTokenRetriever {
         }
 
         String encodedToken = response.readEntity(String.class);
-        Token token = Token.decode(encodedToken, verifCertProvider);
+
+        // decode the token. There is no need to check the token revocation status.
+        Token token = Token.decode(encodedToken, verifCertProvider, null);
 
         return token;
     }
