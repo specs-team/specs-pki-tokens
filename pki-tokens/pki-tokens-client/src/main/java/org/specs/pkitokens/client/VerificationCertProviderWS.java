@@ -8,12 +8,12 @@ import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
 
-public class VerificationCertProviderImpl implements VerificationCertProvider {
+public class VerificationCertProviderWS implements VerificationCertProvider {
     private JerseyClient jerseyClient;
     private String stsAddress;
     private Map<String, X509Certificate> certCache = new HashMap<String, X509Certificate>();
 
-    public VerificationCertProviderImpl(String stsAddress, String trustStoreFile, String trustStorePass) {
+    public VerificationCertProviderWS(String stsAddress, String trustStoreFile, String trustStorePass) {
         this.jerseyClient = new JerseyClient(trustStoreFile, trustStorePass);
         this.stsAddress = stsAddress;
     }

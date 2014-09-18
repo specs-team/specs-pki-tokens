@@ -38,12 +38,15 @@ public class PkiTokenValidatorTest {
 
     @Test
     public void testObtainToken() throws Exception {
-        PkiTokenRetriever pkiTokenRetriever = new PkiTokenRetriever(STS_ADDRESS, TRUSTSTORE_FILE, TRUSTSTORE_PASS);
+        VerificationCertProvider verifCertProvider = new VerificationCertProviderWS(STS_ADDRESS, TRUSTSTORE_FILE, TRUSTSTORE_PASS);
+        PkiTokenRetriever pkiTokenRetriever = new PkiTokenRetriever(STS_ADDRESS,
+                TRUSTSTORE_FILE, TRUSTSTORE_PASS,
+                null, null,
+                verifCertProvider);
         Token token = pkiTokenRetriever.obtainToken("testuser", "somepassword", 1);
         String encodedToken = token.getEncodedValue();
         log.debug("Token obtained: " + encodedToken);
 
-        VerificationCertProvider verifCertProvider = new VerificationCertProviderImpl(STS_ADDRESS, TRUSTSTORE_FILE, TRUSTSTORE_PASS);
         PkiTokenValidator pkiTokenValidator = new PkiTokenValidator(verifCertProvider, trlCache);
 
         Token token1 = pkiTokenValidator.decodeAndValidate(encodedToken);

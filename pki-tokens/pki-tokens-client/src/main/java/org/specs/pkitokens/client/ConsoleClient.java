@@ -50,9 +50,13 @@ public class ConsoleClient {
         }
 
         VerificationCertProvider verifCertProvider =
-                new VerificationCertProviderImpl(stsAddress, truststoreFile, truststorePass);
+                new VerificationCertProviderWS(stsAddress, truststoreFile, truststorePass);
         TRLCache trlCache = new TRLCache(stsAddress, truststoreFile, truststorePass);
-        PkiTokenRetriever pkiTokenRetriever = new PkiTokenRetriever(stsAddress, truststoreFile, truststorePass);
+        PkiTokenRetriever pkiTokenRetriever = new PkiTokenRetriever(stsAddress,
+                truststoreFile, truststorePass,
+                null, null,
+                verifCertProvider);
+
         PkiTokenValidator pkiTokenValidator = new PkiTokenValidator(verifCertProvider, trlCache);
 
         printHelp();

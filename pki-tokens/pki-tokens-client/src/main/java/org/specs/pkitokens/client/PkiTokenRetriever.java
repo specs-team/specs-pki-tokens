@@ -17,16 +17,12 @@ public class PkiTokenRetriever {
     private VerificationCertProvider verifCertProvider;
 
     public PkiTokenRetriever(String stsAddress,
-                             String trustStoreFile, String trustStorePass) {
-        this(stsAddress, trustStoreFile, trustStorePass, null, null);
-    }
-
-    public PkiTokenRetriever(String stsAddress,
                              String trustStoreFile, String trustStorePass,
-                             String keyStoreFile, String keyStorePass) {
+                             String keyStoreFile, String keyStorePass,
+                             VerificationCertProvider verifCertProvider) {
         this.stsAddress = stsAddress;
         jerseyClient = new JerseyClient(trustStoreFile, trustStorePass, keyStoreFile, keyStorePass);
-        verifCertProvider = new VerificationCertProviderImpl(stsAddress, trustStoreFile, trustStorePass);
+        this.verifCertProvider = verifCertProvider;
     }
 
     public Token obtainToken(String username, String password, int slaId) throws Exception {
