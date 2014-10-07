@@ -17,3 +17,5 @@ PKI tokens resemble SAML assertions to a certain extent but use much simpler tok
 PKI tokens are digitally signed which ensures the authenticity and integrity of tokens. Authenticity means that the receiver of the token can be assured that the token really comes from the Security token service, integrity means that the receiver can be sure that the token has not been altered during transmission.
 
 PKI tokens are not encrypted, therefore they must be transmitted only through secure connection. It is safe to put the token into HTTP header but it is not recommended to put them in URL query string.
+
+More: https://github.com/specs-team/specs-pki-tokens/wiki
