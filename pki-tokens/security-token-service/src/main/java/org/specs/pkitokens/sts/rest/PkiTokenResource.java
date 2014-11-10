@@ -25,7 +25,7 @@ public class PkiTokenResource {
         EntityManager em = EMF.createEntityManager();
         try {
             PkiToken pkiToken = em.find(PkiToken.class, tokenId);
-            if (tokenId == null) {
+            if (pkiToken == null) {
                 throw new WebApplicationException(Response.Status.NOT_FOUND);
             }
 

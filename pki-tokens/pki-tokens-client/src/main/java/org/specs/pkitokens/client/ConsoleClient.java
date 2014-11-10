@@ -74,8 +74,8 @@ public class ConsoleClient {
             else if (parts[0].equals("obtain") && parts.length == 4) {
                 obtain(pkiTokenRetriever, parts);
             }
-            else if (parts[0].equals("validate") && parts.length == 2) {
-                validate(pkiTokenValidator, parts);
+            else if (parts[0].equals("extract") && parts.length == 2) {
+                extract(pkiTokenValidator, parts);
             }
             else if (parts[0].equals("isRevoked") && parts.length == 2) {
                 checkRevoked(trlCache, parts);
@@ -100,7 +100,7 @@ public class ConsoleClient {
     private void printHelp() {
         System.out.println("Commands:");
         System.out.println("obtain <username> <password> <sla-id>");
-        System.out.println("validate <token>");
+        System.out.println("extract <token>");
         System.out.println("isRevoked <token-id>");
         System.out.println("printTRL");
         System.out.println("exit");
@@ -123,7 +123,7 @@ public class ConsoleClient {
         }
     }
 
-    private void validate(PkiTokenValidator pkiTokenValidator, String[] args) {
+    private void extract(PkiTokenValidator pkiTokenValidator, String[] args) {
 
         String encodedToken = args[1];
         try {
@@ -133,7 +133,7 @@ public class ConsoleClient {
             System.out.println(token.dump());
         }
         catch (Exception e) {
-            System.out.println("validate failed: " + e.getMessage());
+            System.out.println("extract failed: " + e.getMessage());
         }
     }
 

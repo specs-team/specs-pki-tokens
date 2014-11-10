@@ -123,15 +123,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
-                    <warName>oauth-as</warName>
+                    <warName>sts</warName>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-    <repositories>
-        <repository>
-            <id>shibboleth</id>
-            <url>https://build.shibboleth.net/nexus/content/repositories/releases</url>
-        </repository>
-    </repositories>
 </project>

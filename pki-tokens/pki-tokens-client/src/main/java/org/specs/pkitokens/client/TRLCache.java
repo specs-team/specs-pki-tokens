@@ -62,7 +62,7 @@ public class TRLCache implements RevocationVerifier {
                 if (log.isTraceEnabled()) {
                     dumpTRL();
                 }
-                Thread.sleep(10000);
+                Thread.sleep(15000);
 
                 while (!Thread.currentThread().isInterrupted()) {
                     syncTrlRetry();
@@ -71,7 +71,7 @@ public class TRLCache implements RevocationVerifier {
                         log.trace("TRL has been synchronized successfully.");
                         dumpTRL();
                     }
-                    Thread.sleep(10000); // TODO: configuration param
+                    Thread.sleep(15000); // TODO: configuration param
                 }
             }
             catch (InterruptedException e) {
@@ -84,7 +84,7 @@ public class TRLCache implements RevocationVerifier {
                 try {
                     initTrl();
                     syncSuccessful = true;
-                    log.debug("TRL has been retrieved successfully.");
+                    log.debug("Full TRL has been retrieved successfully.");
                     break;
                 }
                 catch (Exception e) {
@@ -155,6 +155,10 @@ public class TRLCache implements RevocationVerifier {
             JSONObject deltaTrlContentJson = new JSONObject(deltaTrlContent);
             Date toDate = new Date(deltaTrlContentJson.getLong("toDate"));
             JSONArray tokensArray = deltaTrlContentJson.getJSONArray("tokens");
+            if (log.isTraceEnabled()) {
+                log.trace("Retrieved delta TRL: " + tokensArray.toString());
+            }
+
             for (int i = 0; i < tokensArray.length(); i++) {
                 JSONObject item = tokensArray.getJSONObject(i);
                 String tokenId = item.getString("id");
@@ -177,7 +181,7 @@ public class TRLCache implements RevocationVerifier {
         }
 
         private void dumpTRL() {
-            log.trace("Revoked tokens: " + trl.keySet().toString());
+            log.trace("TRL cache: " + trl.keySet().toString());
         }
     }
 }
